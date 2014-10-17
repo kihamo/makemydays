@@ -7,6 +7,8 @@ import (
 	//"log"
 	"path/filepath"
 
+	"github.com/kihamo/makemydays/makemydays"
+
 	//"database/sql"
 	//"github.com/coopernurse/gorp"
 	//_ "github.com/mattn/go-sqlite3"
@@ -15,7 +17,6 @@ import (
 var (
 	web bool
 	spider bool
-	//dbMap *gorp.DbMap
 )
 
 func init() {
@@ -38,40 +39,11 @@ func main() {
 		os.Exit(1)
 	}
 
-	/*
-	dbMap := initDb()
-	defer dbMap.Db.Close()
-	*/
 	if web {
-		fmt.Println(Movie{})
+		makemydays.RunServer()
 	}
-	/*
+
 	if spider {
-		RunSpider()
+		makemydays.RunSpider()
 	}
-	*/
 }
-
-/*
-func initDb() *gorp.DbMap {
-	db, err := sql.Open("sqlite3", "database.db")
-	if err != nil {
-		log.Fatalln(err, "sql.Open failed")
-	}
-
-	dbMap = &gorp.DbMap{Db: db, Dialect: gorp.SqliteDialect{}}
-
-	dbMap.AddTableWithName(Movie{}, "movies").SetKeys(true, "Id")
-	dbMap.AddTableWithName(Song{}, "songs").SetKeys(true, "Id")
-	dbMap.AddTableWithName(Word{}, "words").SetKeys(true, "Id")
-	dbMap.AddTableWithName(Book{}, "books").SetKeys(true, "Id")
-	dbMap.AddTableWithName(Task{}, "tasks").SetKeys(true, "Id")
-	dbMap.AddTableWithName(Food{}, "foods").SetKeys(true, "Id")
-
-	if err = dbMap.CreateTablesIfNotExists(); err != nil {
-		log.Fatalln("Create tables failed", err)
-	}
-
-	return dbMap
-}
-*/
