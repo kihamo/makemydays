@@ -20,24 +20,45 @@ func RunServer() {
 	if err := http.ListenAndServe(ADDR, nil); err != nil {
 		log.Fatalln("failed to start server", err)
 	}
-
-	dbMap := GetDatabase()
-	defer dbMap.Db.Close()
 }
 
 func IndexHandler(w http.ResponseWriter, r *http.Request) {
-	movie := Movie{}
-	dbMap := GetDatabase()
+	db := NewDatabase()
+	defer db.Close()
 
-	err := dbMap.SelectOne(&movie, "SELECT * FROM movies ORDER BY RANDOM() LIMIT 1")
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
+	recommendation := &Recommendation{}
+
+	movie := &Movie{}
+	if err := db.Limit(1).Order("random()").Find(movie).Error; err == nil {
+		recommendation.Movie = movie
 	}
 
-	random := Recommendation{movie, Song{}, Word{}, Book{}, Task{}, Food{}}
+	song := &Song{}
+	if err := db.Limit(1).Order("random()").Find(song).Error; err == nil {
+		recommendation.Song = song
+	}
 
-	jsonContent, err := json.Marshal(random)
+	book := &Book{}
+	if err := db.Limit(1).Order("random()").Find(book).Error; err == nil {
+		recommendation.Book = book
+	}
+
+	word := &Word{}
+	if err := db.Limit(1).Order("random()").Find(word).Error; err == nil {
+		recommendation.Word = word
+	}
+
+	task := &Task{}
+	if err := db.Limit(1).Order("random()").Find(task).Error; err == nil {
+		recommendation.Task = task
+	}
+
+	food := &Food{}
+	if err := db.Limit(1).Order("random()").Find(food).Error; err == nil {
+		recommendation.Food = food
+	}
+
+	jsonContent, err := json.Marshal(recommendation)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
