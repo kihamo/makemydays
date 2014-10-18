@@ -2,6 +2,7 @@ package makemydays
 
 import (
 	"encoding/json"
+	"html/template"
 	"log"
 	"net/http"
 
@@ -14,7 +15,12 @@ const (
 
 func RunServer() {
 	r := mux.NewRouter()
-	r.HandleFunc("/api/v1/recomendations", IndexHandler).Methods("GET")
+
+	r.HandleFunc("/", IndexHandler)
+	r.PathPrefix("/static/").Handler(http.FileServer(http.Dir(".")))
+
+	v1 := r.PathPrefix("/api/v1").Subrouter()
+	v1.HandleFunc("/recomendations", RecommendationsHandler).Methods("GET")
 
 	http.Handle("/", r)
 	if err := http.ListenAndServe(ADDR, nil); err != nil {
@@ -22,7 +28,7 @@ func RunServer() {
 	}
 }
 
-func IndexHandler(w http.ResponseWriter, r *http.Request) {
+func GetRecommendation() *Recommendation {
 	db := NewDatabase()
 	defer db.Close()
 
@@ -58,7 +64,16 @@ func IndexHandler(w http.ResponseWriter, r *http.Request) {
 		recommendation.Food = food
 	}
 
-	jsonContent, err := json.Marshal(recommendation)
+	return recommendation
+}
+
+func IndexHandler(w http.ResponseWriter, r *http.Request) {
+	t, _ := template.ParseFiles("templates/index.html")
+	t.Execute(w, GetRecommendation())
+}
+
+func RecommendationsHandler(w http.ResponseWriter, r *http.Request) {
+	jsonContent, err := json.Marshal(GetRecommendation())
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return

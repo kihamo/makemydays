@@ -60,7 +60,7 @@ func RunSpider() {
 
 	// word
 	word := Word{
-		Title: strings.TrimSpace(jsonObject["Wordapi"].(string)),
+		Word: strings.TrimSpace(jsonObject["Wordapi"].(string)),
 	}
 	db.Save(&word)
 

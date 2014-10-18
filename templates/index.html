@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>make my days</title>
+    <link type="text/css" href="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.2.0/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+<div class="container">
+    <header>
+        <h1 align="center"><font face="Garamond">Make my days</font></h1>
+    </header>
+
+    <div class="carousel slide" id="MyC" align="center">
+        <ol class="carousel-indicators">
+            <li class="active" data-target="#MyC" data-slide-to="0"></li>
+            <li data-target="#MyC" data-slide-to="1"></li>
+            <li data-target="#MyC" data-slide-to="2"></li>
+            <li data-target="#MyC" data-slide-to="3"></li>
+            <li data-target="#MyC" data-slide-to="4"></li>
+            <li data-target="#MyC" data-slide-to="5"></li>
+            <li data-target="#MyC" data-slide-to="5"></li>
+        </ol>
+        <div class="carousel-inner">
+            <div class="item active">
+                <img src="static/current.jpg" align="center">
+
+                <div class="carousel-captio">
+                    <h4>Подскажет и поможет</h4>
+                    <p>Жми на серое по бокам</p>
+                </div>
+            </div>
+            <div class="item">
+                <img src="static/kino.jpg" align="center">
+
+                <div class="carousel-captio">
+                    <h4>Фильм дня</h4>
+                    <p>{{.Movie.Title}}</p>
+                </div>
+            </div>
+            <div class="item">
+                <img src="static/music.jpg" align="center">
+
+                <div class="carousel-captio">
+                    <h4>Песня дня</h4>
+                    <p>{{.Song.Title}}</p>
+                </div>
+            </div>
+            <div class="item">
+                <img src="static/word.jpg">
+
+                <div class="carousel-captio">
+                    <h4>Словечко дня</h4>
+                    <p>{{.Word.Word}}</p>
+                </div>
+            </div>
+            <div class="item">
+                <img src="static/book.jpg">
+
+                <div class="carousel-captio">
+                    <h4>Книга дня</h4>
+                    <p>{{.Book.Title}}</p>
+                </div>
+            </div>
+            <div class="item">
+                <img src="static/food.jpg">
+
+                <div class="carousel-captio">
+                    <h4>Еда дня</h4>
+                    <p>{{.Food.Title}}</p>
+                </div>
+            </div>
+            <div class="item">
+                <img src="static/make.jpg">
+
+                <div class="carousel-captio">
+                    <h4>Занятие дня</h4>
+                    <p>{{.Task.Title}}</p>
+                </div>
+            </div>
+        </div>
+        <a class="carousel-control left" data-slide="prev" href="#MyC">&lsaquo;</a>
+        <a class="carousel-control right" data-slide="next" href="#MyC">&rsaquo;</a>
+    </div>
+
+    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.2.0/js/bootstrap.min.js"></script>
+</body>
+</html>

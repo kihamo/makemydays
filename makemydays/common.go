@@ -29,8 +29,8 @@ type Book struct {
 }
 
 type Word struct {
-	Id    int64  `db:"id" json:"-"`
-	Title string `db:"title" json:"title"`
+	Id   int64  `db:"id" json:"-"`
+	Word string `db:"title" json:"word"`
 }
 
 type Task struct {
