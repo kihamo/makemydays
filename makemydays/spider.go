@@ -5,6 +5,7 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
+	"regexp"
 	"strconv"
 	"strings"
 )
@@ -12,6 +13,12 @@ import (
 const (
 	API_URL = "http://makemydays.me/allapi/"
 )
+
+func TrimFuncQuote(s string) string {
+	return strings.TrimFunc(s, func(r rune) bool {
+			return r == '«' || r == '»'
+		});
+}
 
 func RunSpider() {
 	req, err := http.NewRequest("GET", API_URL, nil)
@@ -43,18 +50,31 @@ func RunSpider() {
 	defer db.Close()
 
 	// movie
+	re := regexp.MustCompile(`(?:([^\p{Cyrillic}]+)\p{Zs})?(\p{Cyrillic}.*)?\p{Zs}([\d]+)`)
 	movieValue := strings.TrimSpace(jsonObject["Filmapi"].(string))
-	movieYear, _ := strconv.ParseInt(movieValue[len(movieValue)-4:len(movieValue)], 10, 64)
+	movieData := re.FindAllStringSubmatch(movieValue, -1)
+
+	if movieData == nil {
+		log.Fatalln("Error parse movie string:", movieValue)
+	}
+
+	movieYear, err := strconv.ParseInt(movieData[0][3], 10, 64)
+	if err != nil {
+		log.Fatalln("Convert year to integer failed", err)
+	}
 
 	movie := Movie{
-		Title: strings.TrimSpace(movieValue[:len(movieValue)-4]),
+		Title: movieData[0][1],
+		TitleRus: movieData[0][2],
 		Year: movieYear,
 	}
 	db.Save(&movie)
 
 	// song
+	songData := strings.Split(jsonObject["Musicapi"].(string), " – ")
 	song := Song{
-		Title: strings.TrimSpace(jsonObject["Musicapi"].(string)),
+		Title: strings.TrimSpace(songData[1]),
+		Author: strings.TrimSpace(songData[0]),
 	}
 	db.Save(&song)
 
@@ -65,8 +85,10 @@ func RunSpider() {
 	db.Save(&word)
 
 	// book
+	bookData := strings.Split(jsonObject["Bookapi"].(string), " — ")
 	book := Book{
-		Title: strings.TrimSpace(jsonObject["Bookapi"].(string)),
+		Title: TrimFuncQuote(bookData[0]),
+		Author: strings.TrimSpace(bookData[1]),
 	}
 	db.Save(&book)
 
