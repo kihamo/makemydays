@@ -23,5 +23,7 @@ func NewDatabase() *gorm.DB {
 		&Food{},
 	)
 
+	// db.LogMode(true)
+
 	return &db
 }
