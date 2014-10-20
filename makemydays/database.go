@@ -25,5 +25,8 @@ func NewDatabase() *gorm.DB {
 
 	// db.LogMode(true)
 
+	db.Exec("PRAGMA journal_mode = OFF")
+	db.Exec("PRAGMA synchronous = OFF")
+
 	return &db
 }
