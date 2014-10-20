@@ -31,7 +31,7 @@ func loadDataFromApi(requestId int) (map[string]interface{}, error) {
 		return nil, err
 	}
 
-	req.Header.Add("User-Agent", fmt.Sprintf("Go-GO Krankus! (request D: %d)", requestId))
+	req.Header.Add("User-Agent", fmt.Sprintf("Go-GO Krankus! (request ID: %d)", requestId))
 
 	client := &http.Client{}
 	res, err := client.Do(req)
