@@ -6,20 +6,64 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/gorilla/mux"
+	"github.com/gocraft/web"
 )
 
+type Context struct {
+}
+
+func (c *Context) RootPage(w web.ResponseWriter, r *web.Request) {
+	t, _ := template.ParseFiles("templates/index.html")
+	t.Execute(w, GetRecommendation())
+}
+
+func (c *Context) NotFound(w web.ResponseWriter, r *web.Request) {
+	w.WriteHeader(http.StatusNotFound)
+
+	t, _ := template.ParseFiles("templates/404.html")
+	t.Execute(w, nil)
+}
+
+func (c *Context) Error(w web.ResponseWriter, r *web.Request, err interface{}) {
+	w.WriteHeader(http.StatusInternalServerError)
+
+	t, _ := template.ParseFiles("templates/500.html")
+	t.Execute(w, err)
+}
+
+func (c *Context) ApiRecomendations(w web.ResponseWriter, r *web.Request) {
+	jsonContent, err := json.Marshal(GetRecommendation())
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	w.Write(jsonContent)
+}
+
 func RunServer(addr string) {
-	r := mux.NewRouter()
+	router := web.New(Context{})
 
-	r.HandleFunc("/", IndexHandler)
-	r.PathPrefix("/static/").Handler(http.FileServer(http.Dir(".")))
+	// middleware
+	router.
+		Middleware(web.LoggerMiddleware).
+		Middleware(web.StaticMiddleware("public")).
 
-	v1 := r.PathPrefix("/api/v1").Subrouter()
-	v1.HandleFunc("/recomendations", RecommendationsHandler).Methods("GET")
+		// TODO: debug obly
+		Middleware(web.ShowErrorsMiddleware)
 
-	http.Handle("/", r)
-	if err := http.ListenAndServe(addr, nil); err != nil {
+	// routes
+	router.
+		NotFound((*Context).NotFound).
+		Error((*Context).Error).
+		Get("/", (*Context).RootPage)
+
+	routerApi := router.Subrouter(Context{}, "/api/v1")
+	routerApi.
+		Get("/recomendations", (*Context).ApiRecomendations)
+
+	if err := http.ListenAndServe(addr, router); err != nil {
 		log.Fatalln("failed to start server", err)
 	}
 }
@@ -61,20 +105,4 @@ func GetRecommendation() *Recommendation {
 	}
 
 	return recommendation
-}
-
-func IndexHandler(w http.ResponseWriter, r *http.Request) {
-	t, _ := template.ParseFiles("templates/index.html")
-	t.Execute(w, GetRecommendation())
-}
-
-func RecommendationsHandler(w http.ResponseWriter, r *http.Request) {
-	jsonContent, err := json.Marshal(GetRecommendation())
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-
-	w.Header().Set("Content-Type", "application/json")
-	w.Write(jsonContent)
 }
