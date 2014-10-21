@@ -1,4 +1,4 @@
-package makemydays
+package app
 
 import (
 	"log"

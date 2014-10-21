@@ -1,4 +1,4 @@
-package makemydays
+package app
 
 type Recommendation struct {
 	Movie *Movie `json:"movie"`

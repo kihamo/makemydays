@@ -6,7 +6,7 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/kihamo/makemydays/makemydays"
+	"github.com/kihamo/makemydays/app"
 )
 
 var (
@@ -40,10 +40,10 @@ func main() {
 	}
 
 	if web {
-		makemydays.RunServer(addr)
+		app.RunServer(addr)
 	}
 
 	if spider {
-		makemydays.RunSpider()
+		app.RunSpider()
 	}
 }
