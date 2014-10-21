@@ -9,11 +9,7 @@ import (
 	"github.com/gorilla/mux"
 )
 
-const (
-	ADDR = ":9001"
-)
-
-func RunServer() {
+func RunServer(addr string) {
 	r := mux.NewRouter()
 
 	r.HandleFunc("/", IndexHandler)
@@ -23,7 +19,7 @@ func RunServer() {
 	v1.HandleFunc("/recomendations", RecommendationsHandler).Methods("GET")
 
 	http.Handle("/", r)
-	if err := http.ListenAndServe(ADDR, nil); err != nil {
+	if err := http.ListenAndServe(addr, nil); err != nil {
 		log.Fatalln("failed to start server", err)
 	}
 }

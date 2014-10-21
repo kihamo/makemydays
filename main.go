@@ -4,19 +4,15 @@ import (
 	"flag"
 	"fmt"
 	"os"
-	//"log"
 	"path/filepath"
 
 	"github.com/kihamo/makemydays/makemydays"
-
-	//"database/sql"
-	//"github.com/coopernurse/gorp"
-	//_ "github.com/mattn/go-sqlite3"
 )
 
 var (
 	web bool
 	spider bool
+	addr string
 )
 
 func init() {
@@ -25,6 +21,10 @@ func init() {
 
 	flag.BoolVar(&spider, "s", false, "Run spider")
 	flag.BoolVar(&spider, "spider", false, "Run spider")
+
+	flag.StringVar(&addr, "a", ":9001", "Server address listen")
+	flag.StringVar(&addr, "addr", ":9001", "Server address listen")
+
 	flag.Usage = func() {
 		fmt.Printf("Usage: %s [options]\nOptions:\n", filepath.Base(os.Args[0]))
 		flag.PrintDefaults()
@@ -40,7 +40,7 @@ func main() {
 	}
 
 	if web {
-		makemydays.RunServer()
+		makemydays.RunServer(addr)
 	}
 
 	if spider {
