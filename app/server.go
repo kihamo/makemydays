@@ -31,7 +31,7 @@ func (c *Context) Error(w web.ResponseWriter, r *web.Request, err interface{}) {
 	t.Execute(w, err)
 }
 
-func (c *Context) ApiRecomendations(w web.ResponseWriter, r *web.Request) {
+func (c *Context) ApiRecommendations(w web.ResponseWriter, r *web.Request) {
 	jsonContent, err := json.Marshal(GetRecommendation())
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -61,7 +61,7 @@ func RunServer(addr string) {
 
 	routerApi := router.Subrouter(Context{}, "/api/v1")
 	routerApi.
-		Get("/recomendations", (*Context).ApiRecomendations)
+		Get("/recomendations", (*Context).ApiRecommendations)
 
 	if err := http.ListenAndServe(addr, router); err != nil {
 		log.Fatalln("failed to start server", err)
